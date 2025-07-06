@@ -17,13 +17,6 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // defining path for build ---  
 
-const path = require('path');
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../build', 'index.html'));
-});
-
 // Example User schema
 const userSchema = new mongoose.Schema({
   username: String,
@@ -83,6 +76,13 @@ app.put('/api/users/:id/role', async (req, res) => {
   const { role } = req.body;
   const user = await User.findByIdAndUpdate(req.params.id, { role }, { new: true });
   res.json(user);
+});
+
+// Serve static files from the React app (after all API routes)
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
