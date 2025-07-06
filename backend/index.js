@@ -81,7 +81,7 @@ app.put('/api/users/:id/role', async (req, res) => {
 // Serve static files from the React app (after all API routes)
 const path = require('path');
 app.use(express.static(path.join(__dirname, '../build')));
-app.get('*', (req, res) => {
+app.get(/^((?!\/api\/).)*$/, (req, res) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
