@@ -9,6 +9,7 @@ import Terms from "./pages/Terms"
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute component
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import Home from "./pages/Home"; // Add this import
 
 
