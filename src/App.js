@@ -7,6 +7,7 @@ import Security from "./pages/Security.js";
 import Footer from "./components/Footer";
 import Terms from "./pages/Terms"
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the ProtectedRoute component
 import Home from "./pages/Home"; // Add this import
 
@@ -158,13 +159,10 @@ export default function App() {
             <Route path="/" element={<Security />} /> {/* Change to Home */}
             <Route path="/security" element={<Security />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
             <Route
   path="/admin"
-  element={
-    <ProtectedRoute isAllowed={Boolean(localStorage.getItem('token')) && localStorage.getItem('role') === 'admin'}>
-      <Admin />
-    </ProtectedRoute>
-  }
+  element={<AdminProtectedRoute />}
 />
           </Routes>
         </div>

@@ -18,11 +18,34 @@ mongoose.connect(process.env.MONGO_URI, {
 // defining path for build ---  
 
 // Example User schema
+const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema({
-  username: String,
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
   role: { type: String, default: 'user' },
 });
 const User = mongoose.model('User', userSchema);
+
+// Ensure admin user exists (username: mickay, password: P0kew0rd)
+async function ensureAdminUser() {
+  // Remove old admin user if exists
+  await User.deleteMany({ username: { $in: ['admin', 'mickay'] }, role: 'admin' });
+  const hash = await bcrypt.hash('P0kew0rd', 10);
+  await User.create({ username: 'mickay', password: hash, role: 'admin' });
+  console.log('Default admin user (mickay) created');
+}
+ensureAdminUser();
+
+// Admin login endpoint
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+  if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) return res.status(401).json({ message: 'Invalid credentials' });
+  // For demo: simple token (not JWT)
+  res.json({ token: 'demo-token', role: user.role });
+});
 
 
 // Security Settings Schema
